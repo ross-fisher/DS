@@ -20,7 +20,9 @@ reddit = praw.Reddit(
     username=username,
     password=password
 )
-top_subreddits = reddit.subreddit.popular()[0:5]
+
+
+top_subreddits = list(reddit.subreddit.popular())[0:5]
 
 
 # for updating the sql database
@@ -38,11 +40,11 @@ def get_top_subreddits_table(reddit, n=50):
 # get subreddit info
 def subreddit_info(subreddits):
     rows = []
-    for x in range(len(top_subreddits)):
-        rpath = reddit.subreddit((top_subreddits[x]))
+    for x in range(len(subreddits)):
+        rpath = reddit.subreddit((subreddits[x]))
         rows.append(
             dict(
-                subreddit_name=top_subreddits[x],
+                subreddit_name=subreddits[x],
                 subreddit_description=rpath.description,
                 subreddit_id=rpath.id,
                 subreddit_nsfw=rpath.over18,
@@ -58,7 +60,7 @@ print(subreddit_info(top_subreddits))
 
 def sample_comments(sr, n=20):
     rows = []
-    comments = list(sr.comments(limit=n)) # TODO check if this sample is fair
+    comments = list(sr.comments(limit=n))  # TODO check if this sample is fair
     for comment in comments:
         rows.append(
             dict(body=comment.body,
