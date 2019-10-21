@@ -22,7 +22,7 @@ reddit = praw.Reddit(
 )
 
 
-# find the top subreddits
+# find the top subreddits, currently top 5
 top_subreddits = list(reddit.subreddits.popular())[0:5]
 top_subreddits = [s.display_name for s in top_subreddits]
 print(top_subreddits)
@@ -53,7 +53,11 @@ def subreddit_info(subreddits):
     return subreddit_info
 
 
-print(subreddit_info(top_subreddits))
+# get info on top subreddits
+top_sub_info = subreddit_info(top_subreddits)
+# print(top_sub_info)
+# conver to csv
+top_sub_info.to_csv('top_subreddit_info.csv')
 
 
 def sample_comments(sr, n=20):
@@ -72,4 +76,4 @@ def sample_comments(sr, n=20):
 
 
 subreddit = reddit.subreddit('learnpython')
-print(sample_comments(subreddit))
+# print(sample_comments(subreddit))
