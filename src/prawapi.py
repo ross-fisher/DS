@@ -43,3 +43,21 @@ top_subreddits = [s.display_name for s in top_subreddits]
 
 # print(reddit.subreddit('redditdev').description)
 # print(reddit.subreddit('redditdev').subscribers)
+
+def sample_comments(sr, n=20):
+    rows = []
+    comments = list(sr.comments())[0:n] # TODO check if this sample is fair
+    for comment in comments:
+        rows.append(
+            dict(body=comment.body,
+                body_html=comment.body_html,
+                id=comment.id,
+                author_id=comment.author.id,
+                subreddit_id=sr.id,
+                created_utc=comment.created_utc))
+    df = pd.DataFrame(rows)
+    return df
+
+
+subreddit = reddit.subreddit('lpython')
+print(sample_comments(subreddit))
