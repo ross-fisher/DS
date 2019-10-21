@@ -34,7 +34,7 @@ def get_top_subreddits_table(reddit, n=50):
 
 def sample_comments(sr, n=20):
     rows = []
-    comments = list(sr.comments())[0:n] # TODO check if this sample is fair
+    comments = list(sr.comments(limit=n)) # TODO check if this sample is fair
     for comment in comments:
         rows.append(
             dict(body=comment.body,
