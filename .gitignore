@@ -1,0 +1,7 @@
+# Comment
+__pycache__/
+lib/
+lib64
+secret.ini
+*.swp
+
