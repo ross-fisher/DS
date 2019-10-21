@@ -60,20 +60,35 @@ top_sub_info = subreddit_info(top_subreddits)
 top_sub_info.to_csv('top_subreddit_info.csv')
 
 
-def sample_comments(sr, n=20):
+def make_comments_table(comments):
     rows = []
-    comments = list(sr.comments(limit=n))  # TODO check if this sample is fair
     for comment in comments:
         rows.append(
             dict(body=comment.body,
                  body_html=comment.body_html,
                  id=comment.id,
                  author_id=comment.author.id,
-                 subreddit_id=sr.id,
+                 subreddit_id=comment.subreddit_id,
                  created_utc=comment.created_utc))
     df = pd.DataFrame(rows)
     return df
 
 
-subreddit = reddit.subreddit('learnpython')
-# print(sample_comments(subreddit))
+def test():
+    sr = reddit.subreddit('learnpython')
+    comments = list(sr.comments(limit=10))  # TODO check if this sample is fair
+    comment_table = make_comments_table(comments)
+    top_subreddits = list(reddit.subreddits.popular())[0:5]
+    subreddits_table = make_subreddits_table(top_subreddits)
+
+    print(comment_table)
+    print(subreddits_table)
+
+    # get info on top subreddits
+    top_sub_info = subreddit_info(top_subreddits)
+    print(top_sub_info)
+    # conver to csv
+    top_sub_info.to_csv('top_subreddit_info.csv')
+
+
+test()
