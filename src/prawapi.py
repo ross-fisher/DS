@@ -22,12 +22,6 @@ reddit = praw.Reddit(
 )
 
 
-# find the top subreddits, currently top 5
-top_subreddits = list(reddit.subreddits.popular())[0:5]
-top_subreddits = [s.display_name for s in top_subreddits]
-print(top_subreddits)
-
-
 # get subreddit info
 def subreddit_info(subreddits):
     rows = []
@@ -53,13 +47,6 @@ def subreddit_info(subreddits):
     return subreddit_info
 
 
-# get info on top subreddits
-top_sub_info = subreddit_info(top_subreddits)
-# print(top_sub_info)
-# conver to csv
-top_sub_info.to_csv('top_subreddit_info.csv')
-
-
 def make_comments_table(comments):
     rows = []
     for comment in comments:
@@ -75,20 +62,23 @@ def make_comments_table(comments):
 
 
 def test():
+    # get test subreddits
     sr = reddit.subreddit('learnpython')
+    # get test comments
     comments = list(sr.comments(limit=10))  # TODO check if this sample is fair
+    # get comments table
     comment_table = make_comments_table(comments)
+    # get top subreddits, currently 5
     top_subreddits = list(reddit.subreddits.popular())[0:5]
-    subreddits_table = make_subreddits_table(top_subreddits)
-
+    top_subreddits = [s.display_name for s in top_subreddits]
+    # print comment table
     print(comment_table)
-    print(subreddits_table)
-
     # get info on top subreddits
     top_sub_info = subreddit_info(top_subreddits)
     print(top_sub_info)
-    # conver to csv
+    # convert to csv
     top_sub_info.to_csv('top_subreddit_info.csv')
 
 
+# run the test function
 test()
