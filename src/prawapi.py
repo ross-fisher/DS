@@ -23,5 +23,15 @@ reddit = praw.Reddit(
 # test
 print(reddit.read_only)
 
-for submission in reddit.subreddit('redditdev').hot(limit=10):
+# test for posts in a subreddit
+# for submission in reddit.subreddit('redditdev').hot(limit=10):
+#     print(submission.title)
+
+subreddit = reddit.subreddit('rubreddits')
+
+# test for top subreddits
+for submission in subreddit.top(limit=20):
     print(submission.title)
+    print(submission.score)
+    print(submission.id)
+    print(submission.url)
