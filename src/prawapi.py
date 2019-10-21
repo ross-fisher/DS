@@ -22,7 +22,11 @@ reddit = praw.Reddit(
 )
 
 
-top_subreddits = list(reddit.subreddit.popular())[0:5]
+# find the top subreddits
+top_subreddits = list(reddit.subreddits.popular())[0:5]
+top_subreddits = [s.display_name for s in top_subreddits]
+print(top_subreddits)
+
 
 # get subreddit info
 def subreddit_info(subreddits):
@@ -31,17 +35,25 @@ def subreddit_info(subreddits):
         rpath = reddit.subreddit((subreddits[x]))
         rows.append(
             dict(
+                # subreddit names
                 subreddit_name=subreddits[x],
+                # subreddit descriptions
                 subreddit_description=rpath.description,
+                # subreddit reddit id
                 subreddit_id=rpath.id,
+                # subreddit nsfw tag
                 subreddit_nsfw=rpath.over18,
+                # subreddit subscriber count
                 subreddit_subscribers=rpath.subscribers
             )
         )
+    # convert the dictionary to dataframe
     subreddit_info = pd.DataFrame(rows)
+    # return the info
     return subreddit_info
 
-print(subreddit_info(subreddits))
+
+print(subreddit_info(top_subreddits))
 
 
 def sample_comments(sr, n=20):
@@ -57,6 +69,7 @@ def sample_comments(sr, n=20):
                  created_utc=comment.created_utc))
     df = pd.DataFrame(rows)
     return df
+
 
 subreddit = reddit.subreddit('learnpython')
 print(sample_comments(subreddit))
