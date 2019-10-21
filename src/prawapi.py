@@ -27,11 +27,19 @@ print(reddit.read_only)
 # for submission in reddit.subreddit('redditdev').hot(limit=10):
 #     print(submission.title)
 
-subreddit = reddit.subreddit('rubreddits')
+subreddit = reddit.subreddit('subreddits')
 
 # test for top subreddits
-for submission in subreddit.top(limit=20):
-    print(submission.title)
-    print(submission.score)
-    print(submission.id)
-    print(submission.url)
+# for submission in subreddit.top(limit=20):
+#     print(submission.title)
+#     print(submission.score)
+#     print(submission.id)
+#     print(submission.url)
+
+# find the popular subreddits, currently top 5
+top_subreddits = list(reddit.subreddits.popular())[0:5]
+top_subreddits = [s.display_name for s in top_subreddits]
+
+
+# print(reddit.subreddit('redditdev').description)
+# print(reddit.subreddit('redditdev').subscribers)
