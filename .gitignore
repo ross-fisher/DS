@@ -1,7 +1,7 @@
-# Comment
+# CommentFiles for git to ignore.
 __pycache__/
 lib/
 lib64
 secrets.ini
 *.swp
-
+top_subreddit_info.csv
