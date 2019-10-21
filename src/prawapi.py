@@ -1,6 +1,7 @@
 # import important libraries
 import praw
 import configparser
+import pandas as pd
 
 # grab userdata from hidden files
 config = configparser.ConfigParser()
@@ -20,29 +21,16 @@ reddit = praw.Reddit(
     password=password
 )
 
-# test
-print(reddit.read_only)
-
-# test for posts in a subreddit
-# for submission in reddit.subreddit('redditdev').hot(limit=10):
-#     print(submission.title)
-
-subreddit = reddit.subreddit('subreddits')
-
-# test for top subreddits
-# for submission in subreddit.top(limit=20):
-#     print(submission.title)
-#     print(submission.score)
-#     print(submission.id)
-#     print(submission.url)
-
-# find the popular subreddits, currently top 5
-top_subreddits = list(reddit.subreddits.popular())[0:5]
-top_subreddits = [s.display_name for s in top_subreddits]
-
-
-# print(reddit.subreddit('redditdev').description)
-# print(reddit.subreddit('redditdev').subscribers)
+# for updating the sql database
+def get_top_subreddits_table(reddit, n=50):
+    popular_subreddits = reddit.subreddits.popular()[0:n]
+    subreddit_infos = []
+    for sr in popular_subreddits:
+        subreddit_infos += [dict(
+            id=sr.id,
+            name=sr['display_name']
+        )]
+    df = pd.DataFrame(subreddit_infos)
 
 def sample_comments(sr, n=20):
     rows = []
@@ -56,8 +44,7 @@ def sample_comments(sr, n=20):
                 subreddit_id=sr.id,
                 created_utc=comment.created_utc))
     df = pd.DataFrame(rows)
-    return df
+    return df 
 
-
-subreddit = reddit.subreddit('lpython')
+subreddit = reddit.subreddit('learnpython')
 print(sample_comments(subreddit))
