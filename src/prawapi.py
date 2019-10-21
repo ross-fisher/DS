@@ -22,3 +22,6 @@ reddit = praw.Reddit(
 
 # test
 print(reddit.read_only)
+
+for submission in reddit.subreddit('redditdev').hot(limit=10):
+    print(submission.title)
