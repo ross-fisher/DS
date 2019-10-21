@@ -2,6 +2,6 @@
 __pycache__/
 lib/
 lib64
-secret.ini
+secrets.ini
 *.swp
 
