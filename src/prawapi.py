@@ -23,7 +23,7 @@ reddit = praw.Reddit(
 
 
 # find the top subreddits, currently top 5
-top_subreddits = list(reddit.subreddits.popular())[0:5]
+top_subreddits = list(reddit.subreddits.popular())[0:200]
 top_subreddits = [s.display_name for s in top_subreddits]
 print(top_subreddits)
 
