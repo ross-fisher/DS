@@ -100,6 +100,7 @@ Subreddit comments not needed, uncomment to restore functionality
 #     return top_comments
 
 
+
 def test():
     # get top subreddits, currently 10
     top_subs = top_subreddits(10)
@@ -115,4 +116,4 @@ def test():
 
 
 # run the test function
-test()
+# test()

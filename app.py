@@ -8,39 +8,46 @@ from flask_jsonpify import jsonify
 from decouple import config
 from scipy.sparse import bsr_matrix
 from joblib import load
+import src.prawapi as prawapi
 
 # config('DATABASE_URL')
 app = Flask(__name__)
 db = create_engine('sqlite:///database.db')
-conn = db.connect()
+api = Api(app)
 
 class Subreddit(Resource):
     def get(self, subreddit_name):
-        query = conn.execute(f'select * from subreddit where subreddit_name = {subreddit_name}')        
-        print( query.cursor.fetchone() )
+        conn = db.connect()
+        query = conn.execute(f"select * from subreddit where name = '{subreddit_name}';")        
+
         return query.cursor.fetchone()
 
     def put(self, todo_id):
+        conn = db.connect()
         request.form['data']
         pass
 
+class Subreddits(Resource):
+    def get(self, page_number):
+        pass
+
 def update_subreddit_table():
+    conn = db.connect()
     conn.execute("""
-        insert into subreddit (name) values 'learnpython';
+        insert into subreddit (name) values ('learnpython');
     """)
     pass
 
 
 def create_tables():
-    conn.execute("""create table subreddit (
-        id INTEGER PRIMARY KEY,
-        name TEXT
-    )""");
+    top_df = prawapi.top_submissions() 
+    top_df.to_sql('submissions', con=db, if_exists='replace')
 
+    print( db.execute('select name from submissions;').fetchone())
 
 create_tables()
-update_subreddit_table()
-api.add_resource(Subreddit, '/subreddit')
+#update_subreddit_table()
+#api.add_resource(Subreddit, '/r/<subreddit_name>')
 
 # grab userdata from hidden files
 config = configparser.ConfigParser()
