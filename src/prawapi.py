@@ -108,10 +108,12 @@ def test():
     # get info on top subreddits
     top_sub_info = subreddit_info(top_subs)
     print(top_sub_info)
+    # get info on top submission on each subreddit
     top_submissons_info = top_submissions(subreddit=top_subs, top_x=10)
     print(top_submissons_info)
     # convert to csv
     top_sub_info.to_csv('top_subreddit_info.csv')
+    top_submissons_info.to_csv('top_submission_info.csv')
 
 
 # run the test function
