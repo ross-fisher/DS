@@ -14,15 +14,19 @@ app = Flask(__name__)
 db = create_engine('sqlite:///database.db')
 conn = db.connect()
 
+
 class Subreddit(Resource):
     def get(self, subreddit_name):
-        query = conn.execute(f'select * from subreddit where subreddit_name = {subreddit_name}')        
-        print( query.cursor.fetchone() )
+        query = conn.execute(
+            f'select * from subreddit where subreddit_name = {subreddit_name}'
+            )
+        print(query.cursor.fetchone())
         return query.cursor.fetchone()
 
     def put(self, todo_id):
         request.form['data']
         pass
+
 
 def update_subreddit_table():
     conn.execute("""
@@ -35,7 +39,7 @@ def create_tables():
     conn.execute("""create table subreddit (
         id INTEGER PRIMARY KEY,
         name TEXT
-    )""");
+    )""")
 
 
 create_tables()
@@ -59,6 +63,7 @@ reddit = praw.Reddit(
     username=username,
     password=password
 )
+
 
 @app.route('/')
 def root():
