@@ -83,6 +83,7 @@ def test():
     print(top_sub_info)
     # convert to csv
     top_sub_info.to_csv('top_subreddit_info.csv')
+    comment_table.to_csv('comments_table.csv')
 
 
 # run the test function
