@@ -1,23 +1,21 @@
 import praw
 import configparser
+import pandas as pd
 from flask import Flask, request
 from sqlalchemy import create_engine
 from flask_restful import Resource, Api
-from flask.ext.jsonpify import jsonify
+from flask_jsonpify import jsonify
 from decouple import config
 from scipy.sparse import bsr_matrix
 from joblib import load
-import pandas as pd
 
 # config('DATABASE_URL')
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///the_db.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
+db = create_engine('sqlite:///database.db')
+conn = db.connect()
 
 class Subreddit(Resource):
     def get(self, subreddit_name):
-        conn = db.connect()
         query = conn.execute(f'select * from subreddit where subreddit_name = {subreddit_name}')        
         print( query.cursor.fetchone() )
         return query.cursor.fetchone()
@@ -28,7 +26,7 @@ class Subreddit(Resource):
 
 def update_subreddit_table():
     conn.execute("""
-        insert into subreddit (learnpython);
+        insert into subreddit (name) values 'learnpython';
     """)
     pass
 
@@ -37,9 +35,8 @@ def create_tables():
         id INTEGER PRIMARY KEY,
         name TEXT
     )""");
-    conn.commit()
 
-create_tables()
+# create_tables()
 update_subreddit_table()
 api.add_resource(Subreddit, '/subreddit')
 
@@ -60,7 +57,6 @@ reddit = praw.Reddit(
     username=username,
     password=password
 )
-
 
 @app.route('/')
 def root():
