@@ -62,25 +62,10 @@ def make_comments_table(comments):
                  id=comment.id,
                  author_id=comment.author.id,
                  subreddit_id=comment.subreddit_id,
-                 subreddit_name=comment.subreddit,
                  created_utc=comment.created_utc))
     df = pd.DataFrame(rows)
     return df
 
-def make_submissions_table(subreddit):
-    rows = []
-    for submission in subreddit.new():
-        rows.append(dict(name=submission.name,
-            submission_id=submission.id,
-            author_id=submission.author.id,
-            body=submission.selftext or "",
-            url=submission.url,
-            num_comments=submission.num_comments,
-            score=submission.score,
-            subreddit_name=subreddit.display_name,
-            created_utc=submission.created_utc))
-    df = pd.DataFrame(rows)
-    return df
 
 def comments_top_subreddits(subreddits=['learnpython'], comment_number=10):
     top_comments = []
@@ -117,4 +102,4 @@ def test():
 
 
 # run the test function
-# test()
+test()
