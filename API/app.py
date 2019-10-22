@@ -9,28 +9,8 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///the_db.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 DB = SQLAlchemy(app)
-
-# # Load pickled model and pickled vectors template
-# nn = load('nearestneighbor_smaller.joblib')
-# tfidf = load('tfidf (1).joblib')
-
-
-# def get_books(description):
-#     '''Predicts books that fit a given description
-#      and outputs a list with the 5 best'''
-#     post = tfidf.transform([description])
-#     post = bsr_matrix.todense(post)
-#     pred_array = nn.kneighbors(post)
-#     output = []
-#     for pred in pred_array[1][0]:
-#         book = DB.session.query(
-#             Book.title, Book.author, Book.rating, Book.isbn
-#             ).filter(Book.id == int(pred)).all()[0]
-#         output.append(book)
-#     return output
-
-
-class Comments(DB.Model):
+# temp
+class Comment(DB.Model):
     id = DB.Column(DB.Integer, primary_key=True)
     subbredditKey = DB.Column(
         DB.Integer, DB.ForeignKey('subreddit.id'), nullable=False
@@ -48,7 +28,95 @@ class Subreddit(DB.Model):
     description = DB.Column(DB.Text)
     subredditID = DB.Column(DB.Text)
     nsfw = DB.Column(DB.Boolean)
-    subscribers = DB.Column(DB.Integer(8))
+    subscribers = DB.Column(DB.Integer)
+
+DB.create_all()
+
+import praw
+import configparser
+import pandas as pd
+
+# grab userdata from hidden files
+config = configparser.ConfigParser()
+config.read('secrets.ini')
+user_agent = config.get('reddit', 'user_agent')
+client_id = config.get('reddit', 'client_id')
+client_secret = config.get('reddit', 'client_secret')
+password = config.get('reddit', 'password')
+username = config.get('reddit', 'username')
+
+# get api access token
+reddit = praw.Reddit(
+    client_id=client_id,
+    client_secret=client_secret,
+    user_agent=user_agent,
+    username=username,
+    password=password
+)
+
+def update_subreddit_table(subreddits):
+    try: 
+        for subreddit in subreddits:
+            sr = Subreddit(
+                name=subreddit.display_name, 
+                description=subreddit.description,
+                subredditID = subreddit.id,
+                nsfw = subreddit.over18,
+                subscribers = subreddit.subscribers
+            )
+            DB.session.add(sr)
+    except Exception as e:
+        print(f'Error {e}')
+
+    DB.session.commit()
+
+def update_user_table(users):
+    pass
+
+def update_comments_table(comments):
+    try: 
+        for comment in comments:
+            c = Comment(body=comment.body,
+                comment_id=comment.id,
+                author_id=comment.author.id,
+                subreddit_id=comment.subreddit_id,
+                created_utc=comment.created_utc)
+            DB.session.add(c)
+    except Exception as e:
+        print(f'Error {e}')
+    
+    DB.session.commit()
+
+def update_all_tables():
+    top_subreddits = get_top_subreddits(n=100)
+    update_subreddit_table(top_subreddits)
+    pass
+
+# find the top x subreddits, defualt 100
+def get_top_subreddits(n=100):
+    top_subs = list(reddit.subreddits.popular())[0:n]
+    return top_subs
+
+def test():
+    top_subreddits = get_top_subreddits(n=100)
+    update_subreddit_table(top_subreddits)
+
+
+@app.route('/')
+def root():
+    test()
+    return 'Hello'
+
+# API route Comments
+@app.route('/api/comments', methods=['POST'])
+def commentsAPI():
+    pass  # API here
+
+
+@app.route('/api/subreddits', methods=['POST'])
+def subredditsAPI():
+    pass  # API here
+
 
 
 # # class Template
@@ -79,18 +147,3 @@ class Subreddit(DB.Model):
 #     description = request.get_json('description')['description']
 #     output = get_books(description)
 #     return jsonify(output)
-
-
-# API route Comments
-@app.route('/api/comments', methods=['POST'])
-def commentsAPI():
-    TODO  # API here
-
-
-@app.route('/api/subreddits', methods=['POST'])
-def subredditsAPI():
-    TODO  # API here
-
-
-if __name__ == '__main__':
-    app.run(debug=True)
