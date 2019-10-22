@@ -66,12 +66,18 @@ def update_subreddit_table(subreddits):
                 nsfw = subreddit.over18,
                 subscribers = subreddit.subscribers
             )
-            print(dir(sr))
-            print(sr.subredditID)
+            print("display name", subreddit.display_name)
+            print("descritpion", subreddit.description)
+            print("id", subreddit.id)
+            print("over18", subreddit.over18)
+            print("subscribers", subreddit.subscribers)
             #print(Subreddit.query.filter_by(subredditID=subreddit.id))
             DB.session.add(sr)
-        print(Subreddit.query.all())
-        #DB.session.commit()
+        print("hello")
+        DB.session.commit()
+        print("hello2")
+        #print(Subreddit.query.all())
+        return 'okay'
     except Exception as e:
         return f'Error {e}'
     return 'Okay'
@@ -91,14 +97,30 @@ def update_comments_table(comments):
         DB.session.commit()
     except Exception as e:
         print(f'Error {e}')
-    
+
+ def update_submissions_table(submission):
+    try: 
+        for submission in submission:
+            c = Comment(name=submission.name,
+                submission_id=submission.id,
+                author_id=submission.author.id,
+                body=submission.selftext or "",
+                url=submission.url,
+                num_comments=submission.num_comments,
+                score=submission.score,
+                subreddit_name=submission.subreddit,
+                created_utc=submission.created_utc)
+            DB.session.add(c)
+        DB.session.commit()
+    except Exception as e:
+        print(f'Error {e}')   
 
 @app.route('/update_tables')
 def update_all_tables():
     DB.drop_all()
-    top_subreddits = get_top_subreddits(n=100)
+    top_subreddits = get_top_subreddits(n=5)
     update_subreddit_table(top_subreddits)
-    pass
+    return 'okay'
 
 # find the top x subreddits, defualt 100
 def get_top_subreddits(n=100):
@@ -106,7 +128,7 @@ def get_top_subreddits(n=100):
     return top_subs
 
 def test():
-    top_subreddits = get_top_subreddits(n=100)
+    top_subreddits = get_top_subreddits(n=5)
     update_subreddit_table(top_subreddits)
 
 
