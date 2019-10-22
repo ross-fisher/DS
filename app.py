@@ -30,13 +30,15 @@ def update_subreddit_table():
     """)
     pass
 
+
 def create_tables():
     conn.execute("""create table subreddit (
         id INTEGER PRIMARY KEY,
         name TEXT
     )""");
 
-# create_tables()
+
+create_tables()
 update_subreddit_table()
 api.add_resource(Subreddit, '/subreddit')
 
