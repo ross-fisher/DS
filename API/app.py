@@ -4,14 +4,16 @@ from decouple import config
 from scipy.sparse import bsr_matrix
 from joblib import load
 
+# config('DATABASE_URL')
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///the_db.db' #config('DATABASE_URL')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///the_db.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 DB = SQLAlchemy(app)
 
 # Load pickled model and pickled vectors
 nn = load('nearestneighbor_smaller.joblib')
 tfidf = load('tfidf (1).joblib')
+
 
 def get_books(description):
     '''Predicts books that fit a given description
@@ -21,11 +23,14 @@ def get_books(description):
     pred_array = nn.kneighbors(post)
     output = []
     for pred in pred_array[1][0]:
-        book = DB.session.query(Book.title, Book.author, Book.rating, Book.isbn).filter(Book.id==int(pred)).all()[0]
+        book = DB.session.query(
+            Book.title, Book.author, Book.rating, Book.isbn
+            ).filter(Book.id == int(pred)).all()[0]
         output.append(book)
     return output
 
-# Database Table 
+
+# Database Table
 class Book(DB.Model):
     id = DB.Column(DB.Integer, primary_key=True, autoincrement=True)
     webpage = DB.Column(DB.BigInteger)
@@ -53,6 +58,7 @@ def api():
     description = request.get_json('description')['description']
     output = get_books(description)
     return jsonify(output)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
