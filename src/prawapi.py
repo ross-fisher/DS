@@ -75,8 +75,6 @@ def top_submissions(subreddit=['redditdev'], top_x=10):
 '''
 Subreddit comments not needed, uncomment to restore functionality
 '''
-
-
 # def make_comments_table(comments):
 #     rows = []
 #     for comment in comments:
