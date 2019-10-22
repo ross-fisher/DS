@@ -45,8 +45,15 @@ def update_subreddit_table():
 
 
 def create_tables():
-    top_df = prawapi.top_submissions()
-    top_df.to_sql('submissions', con=db, if_exists='replace')
+    # find top subreddits
+    top_subs = prawapi.top_subreddits(top_x=100)
+    # find info on top subreddits
+    top_sub_info = prawapi.subreddit_info(top_subs)
+    # find info on top submissions of top subreddits
+    top_submission = prawapi.top_submissions(subreddit=top_subs, top_x=10)
+    # create and populate SQL tables with the info
+    top_sub_info.to_sql('subreddit', con=db, if_exists='replace')
+    top_submission.to_sql('submissions', con=db, if_exists='replace')
 
     print(db.execute('select name from submissions;').fetchone())
 
