@@ -10,24 +10,24 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///the_db.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 DB = SQLAlchemy(app)
 
-# Load pickled model and pickled vectors
-nn = load('nearestneighbor_smaller.joblib')
-tfidf = load('tfidf (1).joblib')
+# # Load pickled model and pickled vectors template
+# nn = load('nearestneighbor_smaller.joblib')
+# tfidf = load('tfidf (1).joblib')
 
 
-def get_books(description):
-    '''Predicts books that fit a given description
-     and outputs a list with the 5 best'''
-    post = tfidf.transform([description])
-    post = bsr_matrix.todense(post)
-    pred_array = nn.kneighbors(post)
-    output = []
-    for pred in pred_array[1][0]:
-        book = DB.session.query(
-            Book.title, Book.author, Book.rating, Book.isbn
-            ).filter(Book.id == int(pred)).all()[0]
-        output.append(book)
-    return output
+# def get_books(description):
+#     '''Predicts books that fit a given description
+#      and outputs a list with the 5 best'''
+#     post = tfidf.transform([description])
+#     post = bsr_matrix.todense(post)
+#     pred_array = nn.kneighbors(post)
+#     output = []
+#     for pred in pred_array[1][0]:
+#         book = DB.session.query(
+#             Book.title, Book.author, Book.rating, Book.isbn
+#             ).filter(Book.id == int(pred)).all()[0]
+#         output.append(book)
+#     return output
 
 
 class Comments(DB.Model):
@@ -51,7 +51,7 @@ class Subreddit(DB.Model):
     subscribers = DB.Column(DB.Integer(8))
 
 
-# # Template
+# # class Template
 # class Book(DB.Model):
 #     id = DB.Column(DB.Integer, primary_key=True, autoincrement=True)
 #     webpage = DB.Column(DB.BigInteger)
@@ -73,12 +73,23 @@ class Subreddit(DB.Model):
 #         return f'Book: {self.title} writtien by {self.author}'
 
 
-# API route
-@app.route('/api/description', methods=['POST'])
-def api():
-    description = request.get_json('description')['description']
-    output = get_books(description)
-    return jsonify(output)
+# # API route template
+# @app.route('/api/description', methods=['POST'])
+# def api():
+#     description = request.get_json('description')['description']
+#     output = get_books(description)
+#     return jsonify(output)
+
+
+# API route Comments
+@app.route('/api/comments', methods=['POST'])
+def commentsAPI():
+    TODO  # API here
+
+
+@app.route('/api/subreddits', methods=['POST'])
+def subredditsAPI():
+    TODO  # API here
 
 
 if __name__ == '__main__':
