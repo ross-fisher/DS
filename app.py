@@ -36,14 +36,6 @@ class Subreddits(Resource):
         pass
 
 
-def update_subreddit_table():
-    conn = db.connect()
-    conn.execute("""
-        insert into subreddit (name) values ('learnpython');
-    """)
-    pass
-
-
 def create_tables():
     # find top subreddits
     top_subs = prawapi.top_subreddits(top_x=100)
@@ -56,7 +48,7 @@ def create_tables():
     top_submission.to_sql('submissions', con=db, if_exists='replace')
 
 
-create_tables()
+# create_tables()
 # update_subreddit_table()
 # api.add_resource(Subreddit, '/r/<subreddit_name>')
 
@@ -82,3 +74,9 @@ reddit = praw.Reddit(
 @app.route('/')
 def root():
     return 'Hello'
+
+
+@app.route('/refresh')
+def refresh():
+    create_tables()
+    return 'Data Refreshed'
