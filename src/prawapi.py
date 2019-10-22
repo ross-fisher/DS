@@ -22,10 +22,11 @@ reddit = praw.Reddit(
 )
 
 
-# find the top subreddits, currently top 5
-top_subreddits = list(reddit.subreddits.popular())[0:200]
-top_subreddits = [s.display_name for s in top_subreddits]
-print(top_subreddits)
+# find the top x subreddits, defualt 100
+def top_subreddits(top_x=100):
+    top_subs = list(reddit.subreddits.popular())[0:top_x]
+    top_subs = [s.display_name for s in top_subs]
+    return top_subs
 
 
 # get subreddit info
@@ -58,7 +59,6 @@ def make_comments_table(comments):
     for comment in comments:
         rows.append(
             dict(body=comment.body,
-                 body_html=comment.body_html,
                  id=comment.id,
                  author_id=comment.author.id,
                  subreddit_id=comment.subreddit_id,
@@ -74,16 +74,16 @@ def test():
     comments = list(sr.comments(limit=10))  # TODO check if this sample is fair
     # get comments table
     comment_table = make_comments_table(comments)
-    # get top subreddits, currently 5
-    top_subreddits = list(reddit.subreddits.popular())[0:200]
-    top_subreddits = [s.display_name for s in top_subreddits]
+    # get top subreddits, currently 10
+    top_subs = top_subreddits(10)
     # print comment table
     print(comment_table)
     # get info on top subreddits
-    top_sub_info = subreddit_info(top_subreddits)
+    top_sub_info = subreddit_info(top_subs)
     print(top_sub_info)
     # convert to csv
     top_sub_info.to_csv('top_subreddit_info.csv')
+    comment_table.to_csv('comments_table.csv')
 
 
 # run the test function
