@@ -30,6 +30,7 @@ class Subreddit(DB.Model):
     nsfw = DB.Column(DB.Boolean)
     subscribers = DB.Column(DB.Integer)
 
+DB.drop_all()
 DB.create_all()
 
 import praw
@@ -57,18 +58,22 @@ reddit = praw.Reddit(
 def update_subreddit_table(subreddits):
     try: 
         for subreddit in subreddits:
+
             sr = Subreddit(
                 name=subreddit.display_name, 
                 description=subreddit.description,
-                subredditID = subreddit.id,
+                subredditID = subreddit.subredditID,
                 nsfw = subreddit.over18,
                 subscribers = subreddit.subscribers
             )
+            print(dir(sr))
+            print(sr.subredditID)
+            #print(Subreddit.query.filter_by(subredditID=subreddit.id))
             DB.session.add(sr)
+        DB.session.commit()
     except Exception as e:
-        print(f'Error {e}')
-
-    DB.session.commit()
+        return f'Error {e}'
+    return 'Okay'
 
 def update_user_table(users):
     pass
@@ -82,12 +87,14 @@ def update_comments_table(comments):
                 subreddit_id=comment.subreddit_id,
                 created_utc=comment.created_utc)
             DB.session.add(c)
+        DB.session.commit()
     except Exception as e:
         print(f'Error {e}')
     
-    DB.session.commit()
 
+@app.route('/update_tables')
 def update_all_tables():
+    DB.drop_all()
     top_subreddits = get_top_subreddits(n=100)
     update_subreddit_table(top_subreddits)
     pass
@@ -104,8 +111,8 @@ def test():
 
 @app.route('/')
 def root():
-    test()
     return 'Hello'
+
 
 # API route Comments
 @app.route('/api/comments', methods=['POST'])
