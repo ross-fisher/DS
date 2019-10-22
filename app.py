@@ -55,8 +55,6 @@ def create_tables():
     top_sub_info.to_sql('subreddit', con=db, if_exists='replace')
     top_submission.to_sql('submissions', con=db, if_exists='replace')
 
-    print(db.execute('select name from submissions;').fetchone())
-
 
 create_tables()
 # update_subreddit_table()
