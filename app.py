@@ -15,6 +15,7 @@ app = Flask(__name__)
 db = create_engine('sqlite:///database.db')
 api = Api(app)
 
+
 class Subreddit(Resource):
     def get(self, subreddit_name):
         conn = db.connect()
@@ -66,6 +67,7 @@ reddit = praw.Reddit(
     username=username,
     password=password
 )
+
 
 @app.route('/')
 def root():
