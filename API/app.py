@@ -30,26 +30,47 @@ def get_books(description):
     return output
 
 
-# Database Table
-class Book(DB.Model):
-    id = DB.Column(DB.Integer, primary_key=True, autoincrement=True)
-    webpage = DB.Column(DB.BigInteger)
-    title = DB.Column(DB.String(300))
-    author = DB.Column(DB.String(100))
-    descrip = DB.Column(DB.String(25000))
-    rating = DB.Column(DB.Float)
-    num_ratings = DB.Column(DB.String(30))
-    num_reviews = DB.Column(DB.String(30))
-    isbn = DB.Column(DB.String(110))
-    isbn13 = DB.Column(DB.String(110))
-    binding = DB.Column(DB.String(100))
-    edition = DB.Column(DB.String(125))
-    num_pages = DB.Column(DB.String(100))
-    published_on = DB.Column(DB.String(150))
-    genres = DB.Column(DB.String(300))
+class Comments(DB.Model):
+    id = DB.Column(DB.Integer, primary_key=True)
+    subbredditKey = DB.Column(
+        DB.Integer, DB.ForeignKey('subreddit.id'), nullable=False
+        )
+    body = DB.Column(DB.String(25000))
+    commentID = DB.Column(DB.Text)
+    authorID = DB.Column(DB.Text)
+    subredditID = DB.Column(DB.Text)
+    createdUTC = DB.Column(DB.Text)
 
-    def __repr__(self):
-        return f'Book: {self.title} writtien by {self.author}'
+
+class Subreddit(DB.Model):
+    id = DB.Column(DB.Integer, primary_key=True)
+    name = DB.Column(DB.Text)
+    description = DB.Column(DB.Text)
+    subredditID = DB.Column(DB.Text)
+    nsfw = DB.Column(DB.Boolean)
+    subscribers = DB.Column(DB.Integer(8))
+
+
+# # Template
+# class Book(DB.Model):
+#     id = DB.Column(DB.Integer, primary_key=True, autoincrement=True)
+#     webpage = DB.Column(DB.BigInteger)
+#     title = DB.Column(DB.String(300))
+#     author = DB.Column(DB.String(100))
+#     descrip = DB.Column(DB.String(25000))
+#     rating = DB.Column(DB.Float)
+#     num_ratings = DB.Column(DB.String(30))
+#     num_reviews = DB.Column(DB.String(30))
+#     isbn = DB.Column(DB.String(110))
+#     isbn13 = DB.Column(DB.String(110))
+#     binding = DB.Column(DB.String(100))
+#     edition = DB.Column(DB.String(125))
+#     num_pages = DB.Column(DB.String(100))
+#     published_on = DB.Column(DB.String(150))
+#     genres = DB.Column(DB.String(300))
+
+#     def __repr__(self):
+#         return f'Book: {self.title} writtien by {self.author}'
 
 
 # API route

@@ -59,7 +59,6 @@ def make_comments_table(comments):
     for comment in comments:
         rows.append(
             dict(body=comment.body,
-                 body_html=comment.body_html,
                  id=comment.id,
                  author_id=comment.author.id,
                  subreddit_id=comment.subreddit_id,
