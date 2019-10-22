@@ -75,7 +75,7 @@ def test():
     # get comments table
     comment_table = make_comments_table(comments)
     # get top subreddits, currently 5
-    top_subreddits = list(reddit.subreddits.popular())[0:5]
+    top_subreddits = list(reddit.subreddits.popular())[0:200]
     top_subreddits = [s.display_name for s in top_subreddits]
     # print comment table
     print(comment_table)
