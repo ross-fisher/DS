@@ -56,13 +56,13 @@ reddit = praw.Reddit(
 )
 
 def update_subreddit_table(subreddits):
-    try: 
+    try:  # try doesn't actually work
         for subreddit in subreddits:
-
+            print('THNHAOETUHNSAOEUHTNSAOEUHTNH')
             sr = Subreddit(
                 name=subreddit.display_name, 
                 description=subreddit.description,
-                subredditID = subreddit.subredditID,
+                subredditID = subreddit.id,
                 nsfw = subreddit.over18,
                 subscribers = subreddit.subscribers
             )
@@ -70,7 +70,8 @@ def update_subreddit_table(subreddits):
             print(sr.subredditID)
             #print(Subreddit.query.filter_by(subredditID=subreddit.id))
             DB.session.add(sr)
-        DB.session.commit()
+        print(Subreddit.query.all())
+        #DB.session.commit()
     except Exception as e:
         return f'Error {e}'
     return 'Okay'
