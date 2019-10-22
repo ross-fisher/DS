@@ -5,3 +5,4 @@ lib64
 secrets.ini
 *.swp
 top_subreddit_info.csv
+top_comments_table.csv

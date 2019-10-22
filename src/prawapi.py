@@ -67,23 +67,38 @@ def make_comments_table(comments):
     return df
 
 
+def comments_top_subreddits(subreddits=['learnpython'], comment_number=10):
+    top_comments = []
+    top_comments = pd.DataFrame(top_comments)
+    for x in range(len(subreddits)):
+        sr = reddit.subreddit(subreddits[x])
+        comments = list(sr.comments(limit=comment_number))
+        comment_table = make_comments_table(comments)
+        comment_table = pd.DataFrame(comment_table)
+        top_comments = top_comments.append(comment_table)
+    return top_comments
+
+
 def test():
     # get test subreddits
     sr = reddit.subreddit('learnpython')
     # get test comments
-    comments = list(sr.comments(limit=10))  # TODO check if this sample is fair
+    comments = list(sr.comments(limit=10))
+    # TODO check if this sample is fair
     # get comments table
     comment_table = make_comments_table(comments)
+    print(comment_table)
+
     # get top subreddits, currently 10
     top_subs = top_subreddits(10)
-    # print comment table
-    print(comment_table)
     # get info on top subreddits
     top_sub_info = subreddit_info(top_subs)
     print(top_sub_info)
+    # get top comments for each subreddit
+    top_comments_table = comments_top_subreddits(subreddits=top_subs)
     # convert to csv
     top_sub_info.to_csv('top_subreddit_info.csv')
-    comment_table.to_csv('comments_table.csv')
+    top_comments_table.to_csv('top_comments_table.csv')
 
 
 # run the test function
