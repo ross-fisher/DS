@@ -80,3 +80,9 @@ def root():
 def refresh():
     create_tables()
     return 'Data Refreshed'
+
+
+@app.route('/submission_analysis', methods=['POST'])
+def submission_analysis(submission_text=''):
+    # model here
+    return submission_text  # suggested subreddit
