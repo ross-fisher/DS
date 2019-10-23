@@ -8,3 +8,5 @@ top_subreddit_info.csv
 top_comments_table.csv
 top_submission_info.csv
 .env
+__pycache__/
+ipynb_checkpoints/

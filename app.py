@@ -1,3 +1,4 @@
+from util import *
 import praw
 import pandas as pd
 from flask import Flask, request, json
@@ -7,23 +8,23 @@ from flask_jsonpify import jsonify
 from decouple import config
 from scipy.sparse import bsr_matrix
 from joblib import load
-import joblib
 import src.prawapi as prawapi
 from gensim.utils import simple_preprocess
 from gensim.parsing.preprocessing import STOPWORDS
 from sklearn.neighbors import NearestNeighbors
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
+import joblib
+from joblib import load
 
 # config('DATABASE_URL')
 app = Flask(__name__)
 db = create_engine('sqlite:///database.db')
 
+
 # Load Model
 model = load('reddit.joblib')
-tfidf = load('tfidf_vect')
+tfidf = load('tfidf.joblib')
 
-def tokenize(doc):
-   return [token for token in simple_preprocess(doc) if token not in STOPWORDS]
 
 def get_subreddit(title):
     '''Predicts subreddit that fits a given title
@@ -36,26 +37,6 @@ def get_subreddit(title):
         output.append(subreddit)
     return output
     
-
-class Subreddit(Resource):
-    def get(self, subreddit_name):
-        conn = db.connect()
-        query = conn.execute(
-            f"select * from subreddit where name = '{subreddit_name}';"
-            )
-
-        return query.cursor.fetchone()
-
-    def put(self, todo_id):
-        conn = db.connect()
-        request.form['data']
-        pass
-
-
-class Subreddits(Resource):
-    def get(self, page_number):
-        pass
-
 # model = joblib.load('reddit_model')
 
 def create_tables():
@@ -123,15 +104,14 @@ def api_message():
 @app.route('/submission_analysis', methods=['GET', 'POST'])
 def submission_analysis():
     if request.method == 'POST':
-        #submission_text = request.data
-        #data = request.get_json(force=True)
-        #columns = [data['subreddit_name'], data['title']]
+        submission_text = request.data
+        data = request.get_json(force=True)
+        columns = [data['subreddit_name'], data['title']]
+        return jsonify(columns)
         # data['tokens'] = data['title'].apply(tokenize)
         #tfidf = TfidfVectorizer(tokenizer=tokenize, min_df=0.1, max_df=0.9, ngram_range=(1, 2))
         #sparse = tfidf.fit_transform(data['title'])
         #dtm = pd.DataFrame(sparse.todense(), columns=tfidf.get_feature_names())
 
-
-
-
-        return
+if __name__ == "__main__":
+    app.run(debug=True)
