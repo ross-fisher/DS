@@ -20,11 +20,13 @@ reddit = praw.Reddit(
     password=password
 )
 
+
 # find the top x subreddits, defualt 100
 def top_subreddits(top_x=100):
     top_subs = list(reddit.subreddits.popular())[0:top_x]
     top_subs = [s.display_name for s in top_subs]
     return top_subs
+
 
 # get subreddit info
 def subreddit_info(subreddits):
@@ -68,6 +70,7 @@ def top_submissions(subreddit=['redditdev'], top_x=10):
     submission_info = pd.DataFrame(rows)
     return submission_info
 
+
 '''
 Subreddit comments not needed, uncomment to restore functionality
 '''
@@ -94,7 +97,6 @@ Subreddit comments not needed, uncomment to restore functionality
 #         comment_table = pd.DataFrame(comment_table)
 #         top_comments = top_comments.append(comment_table)
 #     return top_comments
-
 
 
 def test():
