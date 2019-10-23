@@ -18,6 +18,8 @@ api = Api(app)
 # Load Model
 model = joblib.load('reddit_model')
 
+
+
 class Subreddit(Resource):
     def get(self, subreddit_name):
         conn = db.connect()
@@ -104,4 +106,5 @@ def api_message():
 def submission_analysis():
     if request.method == 'POST':
         submission_text = request.data
-        return submission_text
+        data = request.get_json(force=True)
+        return
