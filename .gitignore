@@ -1,5 +1,5 @@
 # CommentFiles for git to ignore.
-__pycache__/
+pycache/
 lib/
 lib64
 secrets.ini
@@ -8,5 +8,5 @@ top_subreddit_info.csv
 top_comments_table.csv
 top_submission_info.csv
 .env
-__pycache__/
+pycache/
 ipynb_checkpoints/
