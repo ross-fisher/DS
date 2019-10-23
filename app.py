@@ -1,5 +1,4 @@
 import praw
-import configparser
 import pandas as pd
 from flask import Flask, request, json
 from sqlalchemy import create_engine

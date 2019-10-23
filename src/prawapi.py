@@ -1,7 +1,8 @@
 # import important libraries
 import praw
-import configparser
+from decouple import config
 import pandas as pd
+
 
 # grab userdata from hidden files
 user_agent = config('user_agent')
