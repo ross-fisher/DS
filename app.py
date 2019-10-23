@@ -19,8 +19,8 @@ app = Flask(__name__)
 db = create_engine('sqlite:///database.db')
 
 # Load Model
-model = joblib.load('reddit_model')
-tfidf = joblib.load('tfidf_vect')
+model = load('reddit_model')
+tfidf = load('tfidf_vect')
 
 def tokenize(doc):
    return [token for token in simple_preprocess(doc) if token not in STOPWORDS]
