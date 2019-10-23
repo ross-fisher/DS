@@ -19,10 +19,13 @@ db = create_engine('sqlite:///database.db')
 # Load Model
 model = joblib.load('reddit_model')
 
-def tokenize(doc):
-   return [token for token in simple_preprocess(doc) if token not in STOPWORDS]
 
-   
+def tokenize(doc):
+    return [
+        token for token in simple_preprocess(doc) if token not in STOPWORDS
+        ]
+
+
 class Subreddit(Resource):
     def get(self, subreddit_name):
         conn = db.connect()
@@ -44,6 +47,7 @@ class Subreddits(Resource):
 
 # model = joblib.load('reddit_model')
 
+
 def create_tables():
     # find top subreddits
     top_subs = prawapi.top_subreddits(top_x=100)
@@ -61,8 +65,8 @@ def create_tables():
 # api.add_resource(Subreddit, '/r/<subreddit_name>')
 
 # grab userdata from hidden files
-#config = configparser.ConfigParser()
-#config.read('secrets.ini')
+# config = configparser.ConfigParser()
+# config.read('secrets.ini')
 user_agent = config('user_agent')
 client_id = config('client_id')
 client_secret = config('client_secret')
