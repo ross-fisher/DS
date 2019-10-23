@@ -19,7 +19,7 @@ app = Flask(__name__)
 db = create_engine('sqlite:///database.db')
 
 # Load Model
-model = load('reddit_model')
+model = load('reddit.joblib')
 tfidf = load('tfidf_vect')
 
 def tokenize(doc):
