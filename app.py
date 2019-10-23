@@ -11,19 +11,18 @@ import joblib
 import src.prawapi as prawapi
 from gensim.utils import simple_preprocess
 from gensim.parsing.preprocessing import STOPWORDS
-from sklearn.neighbors import NearestNeighbors
-from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 
 # config('DATABASE_URL')
 app = Flask(__name__)
 db = create_engine('sqlite:///database.db')
 
 # Load Model
-<<<<<<< HEAD
 model = joblib.load('reddit_model')
 
+def tokenize(doc):
+   return [token for token in simple_preprocess(doc) if token not in STOPWORDS]
 
-
+   
 class Subreddit(Resource):
     def get(self, subreddit_name):
         conn = db.connect()
@@ -43,9 +42,7 @@ class Subreddits(Resource):
     def get(self, page_number):
         pass
 
-=======
 # model = joblib.load('reddit_model')
->>>>>>> b0bf5b2f1c05a4939192d21e42a94ed39cb1dad9
 
 def create_tables():
     # find top subreddits
