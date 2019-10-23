@@ -8,35 +8,15 @@ from flask_jsonpify import jsonify
 from decouple import config
 from scipy.sparse import bsr_matrix
 from joblib import load
+import joblib
 import src.prawapi as prawapi
 
 # config('DATABASE_URL')
 app = Flask(__name__)
 db = create_engine('sqlite:///database.db')
-api = Api(app)
 
 # Load Model
-model = joblib.load('reddit_model')
-
-class Subreddit(Resource):
-    def get(self, subreddit_name):
-        conn = db.connect()
-        query = conn.execute(
-            f"select * from subreddit where name = '{subreddit_name}';"
-            )
-
-        return query.cursor.fetchone()
-
-    def put(self, todo_id):
-        conn = db.connect()
-        request.form['data']
-        pass
-
-
-class Subreddits(Resource):
-    def get(self, page_number):
-        pass
-
+# model = joblib.load('reddit_model')
 
 def create_tables():
     # find top subreddits
@@ -55,13 +35,13 @@ def create_tables():
 # api.add_resource(Subreddit, '/r/<subreddit_name>')
 
 # grab userdata from hidden files
-config = configparser.ConfigParser()
-config.read('secrets.ini')
-user_agent = config.get('reddit', 'user_agent')
-client_id = config.get('reddit', 'client_id')
-client_secret = config.get('reddit', 'client_secret')
-password = config.get('reddit', 'password')
-username = config.get('reddit', 'username')
+#config = configparser.ConfigParser()
+#config.read('secrets.ini')
+user_agent = config('user_agent')
+client_id = config('client_id')
+client_secret = config('client_secret')
+password = config('password')
+username = config('username')
 
 # get api access token
 reddit = praw.Reddit(
