@@ -11,6 +11,8 @@ import joblib
 import src.prawapi as prawapi
 from gensim.utils import simple_preprocess
 from gensim.parsing.preprocessing import STOPWORDS
+from sklearn.neighbors import NearestNeighbors
+from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 
 # config('DATABASE_URL')
 app = Flask(__name__)
@@ -115,7 +117,7 @@ def submission_analysis():
         tfidf = TfidfVectorizer(tokenizer=tokenize, min_df=0.1, max_df=0.9, ngram_range=(1, 2))
         sparse = tfidf.fit_transform(reddit_data['subreddit_description'])
         dtm = pd.DataFrame(sparse.todense(), columns=tfidf.get_feature_names())
-        
+
 
 
         return
