@@ -20,13 +20,11 @@ db = create_engine('sqlite:///database.db')
 
 # Load Model
 model = joblib.load('reddit_model')
-
+tf
 
 def tokenize(doc):
-    return [
-        token for token in simple_preprocess(doc) if token not in STOPWORDS
-        ]
-
+   return [token for token in simple_preprocess(doc) if token not in STOPWORDS]
+   
 
 class Subreddit(Resource):
     def get(self, subreddit_name):
@@ -49,7 +47,6 @@ class Subreddits(Resource):
 
 # model = joblib.load('reddit_model')
 
-
 def create_tables():
     # find top subreddits
     top_subs = prawapi.top_subreddits(top_x=100)
@@ -67,8 +64,8 @@ def create_tables():
 # api.add_resource(Subreddit, '/r/<subreddit_name>')
 
 # grab userdata from hidden files
-# config = configparser.ConfigParser()
-# config.read('secrets.ini')
+#config = configparser.ConfigParser()
+#config.read('secrets.ini')
 user_agent = config('user_agent')
 client_id = config('client_id')
 client_secret = config('client_secret')
@@ -115,14 +112,15 @@ def api_message():
 @app.route('/submission_analysis', methods=['GET', 'POST'])
 def submission_analysis():
     if request.method == 'POST':
-        submission_text = request.data
-        data = request.get_json(force=True)
-        columns = [data['subreddit_name'], data['title']]
+        #submission_text = request.data
+        #data = request.get_json(force=True)
+        #columns = [data['subreddit_name'], data['title']]
         # data['tokens'] = data['title'].apply(tokenize)
-        tfidf = TfidfVectorizer(
-            tokenizer=tokenize, min_df=0.1, max_df=0.9, ngram_range=(1, 2)
-            )
-        sparse = tfidf.fit_transform(data['title'])
-        dtm = pd.DataFrame(sparse.todense(), columns=tfidf.get_feature_names())
+        #tfidf = TfidfVectorizer(tokenizer=tokenize, min_df=0.1, max_df=0.9, ngram_range=(1, 2))
+        #sparse = tfidf.fit_transform(data['title'])
+        #dtm = pd.DataFrame(sparse.todense(), columns=tfidf.get_feature_names())
+
+
+
 
         return
