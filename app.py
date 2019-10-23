@@ -1,7 +1,7 @@
 import praw
 import configparser
 import pandas as pd
-from flask import Flask, request
+from flask import Flask, request, json
 from sqlalchemy import create_engine
 from flask_restful import Resource, Api
 from flask_jsonpify import jsonify
@@ -81,8 +81,24 @@ def refresh():
     create_tables()
     return 'Data Refreshed'
 
+@app.route('/messages', methods = ['POST'])
+def api_message():
+    if request.headers['Content-Type'] == 'text/plain':
+        return "Text Message: " + request.data
+    elif request.headers['Content-Type'] == 'application/json':
+        return "JSON Message: " + json.dumps(request.json)
+    elif request.headers['Content-Type'] == 'application/octet-stream':
+        f = open('./binary', 'wb')
+        f.write(request.data)
+        f.close()
+        return "Binary message written!"
+    else:
+        return "415 Unsupported Media Type ;)"
 
-@app.route('/submission_analysis', methods=['POST'])
-def submission_analysis(submission_text=''):
-    # model here
-    return submission_text  # suggested subreddit
+# curl -H "Content-type: text/plain" -d "something"  -X POST the url
+# Content-type: application/json
+@app.route('/submission_analysis', methods=['GET', 'POST'])
+def submission_analysis():
+    if request.method == 'POST':
+        submission_text = request.data
+        return submission_text
