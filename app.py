@@ -20,7 +20,7 @@ db = create_engine('sqlite:///database.db')
 
 # Load Model
 model = load('reddit.joblib')
-tfidf = load('tfidf_vect')
+tfidf = load('tfidf.joblib')
 
 def tokenize(doc):
    return [token for token in simple_preprocess(doc) if token not in STOPWORDS]
