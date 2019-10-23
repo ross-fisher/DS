@@ -24,6 +24,7 @@ db = create_engine('sqlite:///database.db')
 model = load('reddit.joblib')
 tfidf = load('tfidf.joblib')
 
+
 def get_subreddit(title):
     '''Predicts subreddit that fits a given title
      and outputs a list with the 5 best'''
@@ -31,11 +32,14 @@ def get_subreddit(title):
     pred_array = model.kneighbors(post)
     output = []
     for pred in pred_array[1][0]:
-        subreddit = db.session.query(Subreddit.title, Subreddit.name, Subreddit.score).filter(Subreddit.id==int(pred)).all()[0]
+        subreddit = db.session.query(
+            Subreddit.title, Subreddit.name, Subreddit.score
+            ).filter(Subreddit.id == int(pred)).all()[0]
         output.append(subreddit)
     return output
-    
+
 # model = joblib.load('reddit_model')
+
 
 def update_tables():
     # find top subreddits
@@ -48,9 +52,10 @@ def update_tables():
     top_sub_info.to_sql('subreddit', con=db, if_exists='replace')
     top_submission.to_sql('submissions', con=db, if_exists='replace')
 
+
 # grab userdata from hidden files
-#config = configparser.ConfigParser()
-#config.read('secrets.ini')
+# config = configparser.ConfigParser()
+# config.read('secrets.ini')
 user_agent = config('user_agent')
 client_id = config('client_id')
 client_secret = config('client_secret')
@@ -74,10 +79,16 @@ def root():
 
         <div>
             <h4>From command line</h4>
-            curl -H "Content-type: application/json" -d '{"content" : "blah blah blah", "title" : "The title of my submission"}' -X POST https://post-here-reddit-predictor-api.herokuapp.com/submission_analysis
+            curl -H "Content-type: application/json" -d '{
+                "content" : "blah blah blah",
+                 "title" : "The title of my submission"
+                }' -X POST
+                https://post-here-reddit-predictor-api.herokuapp.com/submission_analysis
         </div>
 
-        <div>Full application at <a href=""></a>. Github at <a href="http://https://github.com/Build-Week-Post-Here/DS">http://https://github.com/Build-Week-Post-Here/DS</a> </div>
+        <div>Full application at <a href=""></a>.
+         Github at <a href="http://https://github.com/Build-Week-Post-Here/DS">
+         http://https://github.com/Build-Week-Post-Here/DS</a> </div>
     """
 
 
@@ -86,7 +97,7 @@ def refresh():
     update_tables()
     return 'Data Refreshed'
 
-# for reference 
+# for reference
 # @app.route('/messages', methods=['POST'])
 # def api_message():
 #     if request.headers['Content-Type'] == 'text/plain':
@@ -101,6 +112,7 @@ def refresh():
 #     else:
 #         return "415 Unsupported Media Type ;)"
 
+
 @app.route('/submission_analysis', methods=['GET', 'POST'])
 def submission_analysis():
     """Send a post request to this url to receive the model's prediction."""
@@ -111,9 +123,14 @@ def submission_analysis():
         columns = [data['subreddit_name'], data['title']]
         return jsonify(columns)
         # data['tokens'] = data['title'].apply(tokenize)
-        #tfidf = TfidfVectorizer(tokenizer=tokenize, min_df=0.1, max_df=0.9, ngram_range=(1, 2))
-        #sparse = tfidf.fit_transform(data['title'])
-        #dtm = pd.DataFrame(sparse.todense(), columns=tfidf.get_feature_names())
+        # tfidf = TfidfVectorizer(
+        #     tokenizer=tokenize, min_df=0.1, max_df=0.9, ngram_range=(1, 2)
+        #     )
+        # sparse = tfidf.fit_transform(data['title'])
+        # dtm = pd.DataFrame(
+        #     sparse.todense(), columns=tfidf.get_feature_names()
+        # )
+
 
 if __name__ == "__main__":
     app.run(debug=True)
