@@ -20,25 +20,32 @@ from joblib import load
 app = Flask(__name__)
 db = create_engine('sqlite:///database.db')
 
-# Load Model
-model = load('reddit.joblib')
-tfidf = load('tfidf.joblib')
-
-
 def get_subreddit(title):
     '''Predicts subreddit that fits a given title
      and outputs a list with the 5 best'''
+    # Load Model
+    model = load('nn.joblib')
+    tfidf = load('tfvect.joblib')
     post = tfidf.transform([title])
     pred_array = model.kneighbors(post)
     output = []
-    for pred in pred_array[1][0]:
-        subreddit = db.session.query(
-            Subreddit.title, Subreddit.name, Subreddit.score
-            ).filter(Subreddit.id == int(pred)).all()[0]
-        output.append(subreddit)
-    return output
+    # pred # subreddit_name 
+    top_5_subreddit_scores = pred_array[0][0:5][0]
+    top_5_subreddit_indices = pred_array[1][0:5][0]
 
-# model = joblib.load('reddit_model')
+    names = []
+    conn = db.connect()
+    for sr_index in top_5_subreddit_indices:
+        result = None
+        try:
+            # index has to be wrapped like ("index") because it's a reserved sql keyword
+            recommendation = conn.execute(f'select subreddit_name from submissions where ("index") = {sr_index};').fetchone()
+            names.append(recommendation[0])
+        except Exception as e:
+            print(f'SQL Error: {e}')
+
+    conn.close()
+    return [top_5_subreddit_scores, names]
 
 
 def update_tables():
@@ -122,17 +129,22 @@ def submission_analysis():
     if request.method == 'POST':
         submission_text = request.data
         data = request.get_json(force=True)
-        # content and title?
-        columns = [data['subreddit_name'], data['title']]
-        return jsonify(columns)
-        # data['tokens'] = data['title'].apply(tokenize)
-        # tfidf = TfidfVectorizer(
-        #     tokenizer=tokenize, min_df=0.1, max_df=0.9, ngram_range=(1, 2)
-        #     )
-        # sparse = tfidf.fit_transform(data['title'])
-        # dtm = pd.DataFrame(
-        #     sparse.todense(), columns=tfidf.get_feature_names()
-        # )
+
+        data['tokens'] = tokenize(data['content'])
+       #  tfidf = TfidfVectorizer(
+       #       tokenizer=tokenize, min_df=0.1, max_df=0.9, ngram_range=(1, 2)
+       #       )
+       #  sparse = tfidf.fit_transform(data['content'])
+       #  dtm = pd.DataFrame(
+       #      sparse.todense(), columns=tfidf.get_feature_names()
+       #  )
+
+        x = get_subreddit(data['content'])
+        return jsonify( "\n" + str(x) + "\n") 
+        #return dtm.head()
+
+
+        #return jsonify(columns)
 
 
 if __name__ == "__main__":
