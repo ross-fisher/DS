@@ -1,5 +1,4 @@
 import praw
-import configparser
 import pandas as pd
 from flask import Flask, request, json
 from sqlalchemy import create_engine
@@ -8,14 +7,15 @@ from flask_jsonpify import jsonify
 from decouple import config
 from scipy.sparse import bsr_matrix
 from joblib import load
+import joblib
 import src.prawapi as prawapi
 
 # config('DATABASE_URL')
 app = Flask(__name__)
 db = create_engine('sqlite:///database.db')
-api = Api(app)
 
 # Load Model
+<<<<<<< HEAD
 model = joblib.load('reddit_model')
 
 
@@ -39,6 +39,9 @@ class Subreddits(Resource):
     def get(self, page_number):
         pass
 
+=======
+# model = joblib.load('reddit_model')
+>>>>>>> b0bf5b2f1c05a4939192d21e42a94ed39cb1dad9
 
 def create_tables():
     # find top subreddits
@@ -57,13 +60,13 @@ def create_tables():
 # api.add_resource(Subreddit, '/r/<subreddit_name>')
 
 # grab userdata from hidden files
-config = configparser.ConfigParser()
-config.read('secrets.ini')
-user_agent = config.get('reddit', 'user_agent')
-client_id = config.get('reddit', 'client_id')
-client_secret = config.get('reddit', 'client_secret')
-password = config.get('reddit', 'password')
-username = config.get('reddit', 'username')
+#config = configparser.ConfigParser()
+#config.read('secrets.ini')
+user_agent = config('user_agent')
+client_id = config('client_id')
+client_secret = config('client_secret')
+password = config('password')
+username = config('username')
 
 # get api access token
 reddit = praw.Reddit(
