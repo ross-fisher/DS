@@ -33,7 +33,7 @@ def get_subreddit(title):
     output = []
     for pred in pred_array[1][0]:
         subreddit = db.session.query(Subreddit.title, Subreddit.name, Subreddit.score).filter(Subreddit.id==int(pred)).all()[0]
-        output.append(book)
+        output.append(subreddit)
     return output
     
 
