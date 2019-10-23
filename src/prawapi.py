@@ -1,16 +1,15 @@
 # import important libraries
 import praw
-import configparser
+from decouple import config
 import pandas as pd
 
+
 # grab userdata from hidden files
-config = configparser.ConfigParser()
-config.read('secrets.ini')
-user_agent = config.get('reddit', 'user_agent')
-client_id = config.get('reddit', 'client_id')
-client_secret = config.get('reddit', 'client_secret')
-password = config.get('reddit', 'password')
-username = config.get('reddit', 'username')
+user_agent = config('user_agent')
+client_id = config('client_id')
+client_secret = config('client_secret')
+password = config('password')
+username = config('username')
 
 # get api access token
 reddit = praw.Reddit(
