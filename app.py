@@ -9,6 +9,10 @@ from scipy.sparse import bsr_matrix
 from joblib import load
 import joblib
 import src.prawapi as prawapi
+from gensim.utils import simple_preprocess
+from gensim.parsing.preprocessing import STOPWORDS
+from sklearn.neighbors import NearestNeighbors
+from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 
 # config('DATABASE_URL')
 app = Flask(__name__)
