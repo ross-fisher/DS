@@ -24,7 +24,18 @@ tfidf = joblib.load('tfidf_vect')
 
 def tokenize(doc):
    return [token for token in simple_preprocess(doc) if token not in STOPWORDS]
-   
+
+def get_subreddit(title):
+    '''Predicts subreddit that fits a given title
+     and outputs a list with the 5 best'''
+    post = tfidf.transform([title])
+    pred_array = model.kneighbors(post)
+    output = []
+    for pred in pred_array[1][0]:
+        subreddit = db.session.query(Subreddit.title, Subreddit.name, Subreddit.score).filter(Subreddit.id==int(pred)).all()[0]
+        output.append(book)
+    return output
+    
 
 class Subreddit(Resource):
     def get(self, subreddit_name):
