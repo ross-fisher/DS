@@ -43,19 +43,22 @@ def get_subreddit(title):
 
 def update_tables():
     # find top subreddits
-    top_subs = prawapi.top_subreddits(top_x=100)
+    top_subs = prawapi.top_subreddits(top_x=200)
     # find info on top subreddits
     top_sub_info = prawapi.subreddit_info(top_subs)
     # find info on top submissions of top subreddits
-    top_submission = prawapi.top_submissions(subreddit=top_subs, top_x=10)
+    top_submission = prawapi.top_submissions(subreddit=top_subs, top_x=25)
     # create and populate SQL tables with the info
     top_sub_info.to_sql('subreddit', con=db, if_exists='replace')
     top_submission.to_sql('submissions', con=db, if_exists='replace')
+    top_sub_info.to_csv('top_subreddit_info.csv')
+    top_submissons_info.to_csv('top_submission_info.csv')
 
 
 # grab userdata from hidden files
 # config = configparser.ConfigParser()
 # config.read('secrets.ini')
+
 user_agent = config('user_agent')
 client_id = config('client_id')
 client_secret = config('client_secret')
