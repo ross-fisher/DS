@@ -1,4 +1,5 @@
-from util import *
+import src.prawapi as prawapi
+from src.util import *
 import praw
 import pandas as pd
 from flask import Flask, request, json
@@ -8,7 +9,6 @@ from flask_jsonpify import jsonify
 from decouple import config
 from scipy.sparse import bsr_matrix
 from joblib import load
-import src.prawapi as prawapi
 from gensim.utils import simple_preprocess
 from gensim.parsing.preprocessing import STOPWORDS
 from sklearn.neighbors import NearestNeighbors
@@ -20,11 +20,9 @@ from joblib import load
 app = Flask(__name__)
 db = create_engine('sqlite:///database.db')
 
-
 # Load Model
 model = load('reddit.joblib')
 tfidf = load('tfidf.joblib')
-
 
 def get_subreddit(title):
     '''Predicts subreddit that fits a given title
@@ -39,7 +37,7 @@ def get_subreddit(title):
     
 # model = joblib.load('reddit_model')
 
-def create_tables():
+def update_tables():
     # find top subreddits
     top_subs = prawapi.top_subreddits(top_x=100)
     # find info on top subreddits
@@ -49,11 +47,6 @@ def create_tables():
     # create and populate SQL tables with the info
     top_sub_info.to_sql('subreddit', con=db, if_exists='replace')
     top_submission.to_sql('submissions', con=db, if_exists='replace')
-
-
-# create_tables()
-# update_subreddit_table()
-# api.add_resource(Subreddit, '/r/<subreddit_name>')
 
 # grab userdata from hidden files
 #config = configparser.ConfigParser()
@@ -76,36 +69,45 @@ reddit = praw.Reddit(
 
 @app.route('/')
 def root():
-    return 'Hello'
+    return """
+        <h1>Post Here Reddit Predictor API</h1>
+
+        <div>
+            <h4>From command line</h4>
+            curl -H "Content-type: application/json" -d '{"content" : "blah blah blah", "title" : "The title of my submission"}' -X POST https://post-here-reddit-predictor-api.herokuapp.com/submission_analysis
+        </div>
+
+        <div>Full application at <a href=""></a>. Github at <a href="http://https://github.com/Build-Week-Post-Here/DS">http://https://github.com/Build-Week-Post-Here/DS</a> </div>
+    """
 
 
 @app.route('/refresh')
 def refresh():
-    create_tables()
+    update_tables()
     return 'Data Refreshed'
 
+# for reference 
+# @app.route('/messages', methods=['POST'])
+# def api_message():
+#     if request.headers['Content-Type'] == 'text/plain':
+#         return "Text Message: " + request.data
+#     elif request.headers['Content-Type'] == 'application/json':
+#         return "JSON Message: " + json.dumps(request.json)
+#     elif request.headers['Content-Type'] == 'application/octet-stream':
+#         f = open('./binary', 'wb')
+#         f.write(request.data)
+#         f.close()
+#         return "Binary message written!"
+#     else:
+#         return "415 Unsupported Media Type ;)"
 
-@app.route('/messages', methods=['POST'])
-def api_message():
-    if request.headers['Content-Type'] == 'text/plain':
-        return "Text Message: " + request.data
-    elif request.headers['Content-Type'] == 'application/json':
-        return "JSON Message: " + json.dumps(request.json)
-    elif request.headers['Content-Type'] == 'application/octet-stream':
-        f = open('./binary', 'wb')
-        f.write(request.data)
-        f.close()
-        return "Binary message written!"
-    else:
-        return "415 Unsupported Media Type ;)"
-
-# curl -H "Content-type: text/plain" -d "something"  -X POST the url
-# Content-type: application/json
 @app.route('/submission_analysis', methods=['GET', 'POST'])
 def submission_analysis():
+    """Send a post request to this url to receive the model's prediction."""
     if request.method == 'POST':
         submission_text = request.data
         data = request.get_json(force=True)
+        # content and title?
         columns = [data['subreddit_name'], data['title']]
         return jsonify(columns)
         # data['tokens'] = data['title'].apply(tokenize)
