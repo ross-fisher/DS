@@ -15,6 +15,8 @@ app = Flask(__name__)
 db = create_engine('sqlite:///database.db')
 api = Api(app)
 
+# Load Model
+model = joblib.load('reddit_model')
 
 class Subreddit(Resource):
     def get(self, subreddit_name):
