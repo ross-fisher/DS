@@ -81,7 +81,8 @@ def refresh():
     create_tables()
     return 'Data Refreshed'
 
-@app.route('/messages', methods = ['POST'])
+
+@app.route('/messages', methods=['POST'])
 def api_message():
     if request.headers['Content-Type'] == 'text/plain':
         return "Text Message: " + request.data
