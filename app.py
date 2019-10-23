@@ -21,8 +21,8 @@ model = joblib.load('reddit_model')
 
 def tokenize(doc):
    return [token for token in simple_preprocess(doc) if token not in STOPWORDS]
-
    
+
 class Subreddit(Resource):
     def get(self, subreddit_name):
         conn = db.connect()
@@ -111,4 +111,11 @@ def submission_analysis():
     if request.method == 'POST':
         submission_text = request.data
         data = request.get_json(force=True)
+        columns = [data['subreddit_name'], data['title']]
+        tfidf = TfidfVectorizer(tokenizer=tokenize, min_df=0.1, max_df=0.9, ngram_range=(1, 2))
+        sparse = tfidf.fit_transform(reddit_data['subreddit_description'])
+        dtm = pd.DataFrame(sparse.todense(), columns=tfidf.get_feature_names())
+        
+
+
         return
