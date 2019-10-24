@@ -82,10 +82,10 @@ def root():
         <div>
             <h4>From command line</h4>
             curl -H "Content-type: application/json" -d '{
-                "content" : "blah blah blah",
+                "post" : "blah blah blah",
                  "title" : "The title of my submission"
                 }' -X POST
-                https://post-here-reddit-predictor-api.herokuapp.com/submission_analysis
+                https://post-here-reddit-ranker-api.herokuapp.com/submission_analysis
         </div>
 
         <div>Full application at <a href=""></a>.
@@ -116,3 +116,6 @@ def submission_analysis():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+
+
