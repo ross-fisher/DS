@@ -44,7 +44,7 @@ def get_subreddit(title):
             print(f'SQL Error: {e}')
 
     conn.close()
-    return [names]
+    return names
 
 def update_tables():
     # find top subreddits
