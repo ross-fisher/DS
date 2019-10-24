@@ -42,7 +42,8 @@ def get_subreddit(title):
             # index has to be wrapped like ("index")
             # because it's a reserved sql keyword
             recommendation = conn.execute(
-                f'select subreddit_name from submissions where ("index") = {sr_index};'
+                f'select subreddit_name '
+                'from submissions where ("index") = {sr_index};'
                 ).fetchone()
             names.append(recommendation[0])
         except Exception as e:
