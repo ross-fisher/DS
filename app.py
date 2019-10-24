@@ -4,7 +4,6 @@ import praw
 import pandas as pd
 from flask import Flask, request, json
 from sqlalchemy import create_engine
-from flask_restful import Resource, Api
 from flask_jsonpify import jsonify
 from decouple import config
 from scipy.sparse import bsr_matrix
