@@ -44,7 +44,7 @@ def get_subreddit(title):
             print(f'SQL Error: {e}')
 
     conn.close()
-    return [top_5_subreddit_scores, names]
+    return [names]
 
 def update_tables():
     # find top subreddits
@@ -107,10 +107,7 @@ def submission_analysis():
 
         data['tokens'] = tokenize(data['content'])
         x = get_subreddit(data['content'])
-        return jsonify( "\n" + str(x) + "\n")
-
-
-        #return jsonify(columns)
+        return jsonify(x)
 
 if __name__ == "__main__":
     app.run(debug=True)

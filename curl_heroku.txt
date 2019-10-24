@@ -1,1 +1,1 @@
-curl -H "Content-type: application/json" -d '{"content" : "something"}' -X POST https://post-here-reddit-predictor-api.herokuapp.com/oeau
+curl -H "Content-type: application/json" -d '{"content" : "something"}' -X POST https://post-here-reddit-ranker-api.herokuapp.com/submission_analysis
