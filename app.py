@@ -3,7 +3,6 @@ from src.util import *
 import praw
 import pandas as pd
 from flask import Flask, request, json
-from flask_cors import CORS, cross_origin
 from sqlalchemy import create_engine
 from flask_jsonpify import jsonify
 from decouple import config
@@ -18,8 +17,6 @@ from joblib import load
 
 # config('DATABASE_URL')
 app = Flask(__name__)
-cors = CORS(app)
-app.config['CORS_HEADERS'] = 'Content-Type'
 db = create_engine('sqlite:///database.db')
 
 def get_subreddit(title):
@@ -32,21 +29,27 @@ def get_subreddit(title):
     pred_array = model.kneighbors(post)
     output = []
     # pred # subreddit_name 
-    top_5_subreddit_scores = pred_array[0][0:5][0]
-    top_5_subreddit_indices = pred_array[1][0:5][0]
+    subreddit_indices = pred_array[1][0]
 
-    names = []
-    conn = db.connect()
-    for sr_index in top_5_subreddit_indices:
-        result = None
-        try:
-            # index has to be wrapped like ("index") because it's a reserved sql keyword
-            recommendation = conn.execute(f'select subreddit_name from submissions where ("index") = {sr_index};').fetchone()
-            names.append(recommendation[0])
-        except Exception as e:
-            print(f'SQL Error: {e}')
+    def get_top_5_subreddits(subreddit_indices):
+        conn = db.connect()
+        names = set()
+        for sr_index in subreddit_indices:
+            result = None
+            print( sr_index )
+            try:
+                # index has to be wrapped like ("index") because it's a reserved sql keyword
+                recommendation = conn.execute(f'select subreddit_name from submissions where ("index") = {sr_index};').fetchone()
+                names.add(recommendation[0])
+            except Exception as e:
+                print(f'SQL Error: {e}')
+            if len(names) == 5:
+                break
+        conn.close()
+        return names
 
-    conn.close()
+                
+    names = list(get_top_5_subreddits(subreddit_indices))
     return names
 
 def update_tables():
@@ -78,7 +81,6 @@ reddit = praw.Reddit(
 )
 
 @app.route('/')
-@cross_origin()
 def root():
     return """
         <h1>Post Here Reddit Predictor API</h1>
@@ -103,14 +105,13 @@ def refresh():
     return 'Data Refreshed'
 
 @app.route('/submission_analysis', methods=['GET', 'POST'])
-@cross_origin()
 def submission_analysis():
     """Send a post request to this url to receive the model's prediction."""
     if request.method == 'POST':
         submission_text = request.data
         data = request.get_json(force=True)
 
-#        data['tokens'] = tokenize(data['title'] + data['post'])
+        #        data['tokens'] = tokenize(data['title'] + data['post'])
         #data['tokens'] = tokenize(data['content'])
 
         if data['post'] == None:
