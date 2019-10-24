@@ -105,8 +105,9 @@ def submission_analysis():
         submission_text = request.data
         data = request.get_json(force=True)
 
-        data['tokens'] = tokenize(data['content'])
-        x = get_subreddit(data['content'])
+#        data['tokens'] = tokenize(data['title'] + data['post'])
+        #data['tokens'] = tokenize(data['content'])
+        x = get_subreddit( data['title'] + data['post'] )
         return jsonify(x)
 
 if __name__ == "__main__":

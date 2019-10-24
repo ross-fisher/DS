@@ -1,0 +1,1 @@
+curl -H "Content-type: application/json" -d '{"text" : "something"}' -X POST https://post-here-reddit-ranker-api.herokuapp.com/submission_analysis

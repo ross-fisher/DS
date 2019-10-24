@@ -1,2 +1,2 @@
-curl -H "Content-type: application/json" -d '{"content" : "something"}' -X POST localhost:5000/submission_analysis
+curl -H "Content-type: application/json" -d '{"title" : "Stan Lee has passed away at 95 years old", "post" : "As many of you know today is day that many of us have dreaded."}' -X POST localhost:5000/submission_analysis
 
