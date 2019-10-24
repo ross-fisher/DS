@@ -114,7 +114,5 @@ def submission_analysis():
 
         #return jsonify(columns)
 
-__name__ = "__main__"
-
 if __name__ == "__main__":
     app.run(debug=True)
