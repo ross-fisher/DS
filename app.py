@@ -20,7 +20,6 @@ from joblib import load
 app = Flask(__name__)
 db = create_engine('sqlite:///database.db')
 
-
 def get_subreddit(title):
     '''Predicts subreddit that fits a given title
      and outputs a list with the 5 best'''
@@ -30,7 +29,7 @@ def get_subreddit(title):
     post = tfidf.transform([title])
     pred_array = model.kneighbors(post)
     output = []
-    # pred # subreddit_name
+    # pred # subreddit_name 
     top_5_subreddit_scores = pred_array[0][0:5][0]
     top_5_subreddit_indices = pred_array[1][0:5][0]
 
@@ -39,19 +38,14 @@ def get_subreddit(title):
     for sr_index in top_5_subreddit_indices:
         result = None
         try:
-            # index has to be wrapped like ("index")
-            # because it's a reserved sql keyword
-            recommendation = conn.execute(
-                f'select subreddit_name '
-                'from submissions where ("index") = {sr_index};'
-                ).fetchone()
+            # index has to be wrapped like ("index") because it's a reserved sql keyword
+            recommendation = conn.execute(f'select subreddit_name from submissions where ("index") = {sr_index};').fetchone()
             names.append(recommendation[0])
         except Exception as e:
             print(f'SQL Error: {e}')
 
     conn.close()
     return [top_5_subreddit_scores, names]
-
 
 def update_tables():
     # find top subreddits
@@ -65,11 +59,6 @@ def update_tables():
     top_submission.to_sql('submissions', con=db, if_exists='replace')
     top_sub_info.to_csv('top_subreddit_info.csv')
     top_submission.to_csv('top_submission_info.csv')
-
-
-# grab userdata from hidden files
-# config = configparser.ConfigParser()
-# config.read('secrets.ini')
 
 user_agent = config('user_agent')
 client_id = config('client_id')
@@ -85,7 +74,6 @@ reddit = praw.Reddit(
     username=username,
     password=password
 )
-
 
 @app.route('/')
 def root():
@@ -106,27 +94,10 @@ def root():
          http://https://github.com/Build-Week-Post-Here/DS</a> </div>
     """
 
-
 @app.route('/refresh')
 def refresh():
     update_tables()
     return 'Data Refreshed'
-
-# for reference
-# @app.route('/messages', methods=['POST'])
-# def api_message():
-#     if request.headers['Content-Type'] == 'text/plain':
-#         return "Text Message: " + request.data
-#     elif request.headers['Content-Type'] == 'application/json':
-#         return "JSON Message: " + json.dumps(request.json)
-#     elif request.headers['Content-Type'] == 'application/octet-stream':
-#         f = open('./binary', 'wb')
-#         f.write(request.data)
-#         f.close()
-#         return "Binary message written!"
-#     else:
-#         return "415 Unsupported Media Type ;)"
-
 
 @app.route('/submission_analysis', methods=['GET', 'POST'])
 def submission_analysis():
@@ -136,20 +107,14 @@ def submission_analysis():
         data = request.get_json(force=True)
 
         data['tokens'] = tokenize(data['content'])
-        #  tfidf = TfidfVectorizer(
-        #       tokenizer=tokenize, min_df=0.1, max_df=0.9, ngram_range=(1, 2)
-        #       )
-        #  sparse = tfidf.fit_transform(data['content'])
-        #  dtm = pd.DataFrame(
-        #      sparse.todense(), columns=tfidf.get_feature_names()
-        #  )
-
         x = get_subreddit(data['content'])
-        return jsonify("\n" + str(x) + "\n")
-        # return dtm.head()
+        return jsonify( "\n" + str(x) + "\n") 
+        #return dtm.head()
 
-        # return jsonify(columns)
 
+        #return jsonify(columns)
+
+__name__ = "__main__"
 
 if __name__ == "__main__":
     app.run(debug=True)
