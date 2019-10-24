@@ -1,0 +1,2 @@
+curl -H "Content-type: application/json" -d '{"content" : "something"}' -X POST localhost:5000/submission_analysis
+
