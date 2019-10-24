@@ -3,6 +3,7 @@ from src.util import *
 import praw
 import pandas as pd
 from flask import Flask, request, json
+from flask_cors import CORS, cross_origin
 from sqlalchemy import create_engine
 from flask_jsonpify import jsonify
 from decouple import config
@@ -17,6 +18,8 @@ from joblib import load
 
 # config('DATABASE_URL')
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 db = create_engine('sqlite:///database.db')
 
 def get_subreddit(title):
@@ -75,6 +78,7 @@ reddit = praw.Reddit(
 )
 
 @app.route('/')
+@cross_origin()
 def root():
     return """
         <h1>Post Here Reddit Predictor API</h1>
@@ -99,6 +103,7 @@ def refresh():
     return 'Data Refreshed'
 
 @app.route('/submission_analysis', methods=['GET', 'POST'])
+@cross_origin()
 def submission_analysis():
     """Send a post request to this url to receive the model's prediction."""
     if request.method == 'POST':
@@ -111,7 +116,7 @@ def submission_analysis():
         if data['post'] == None:
             data['post'] = ""
 
-        x = get_subreddit( data['title'] + data['post'] )
+        x = get_subreddit(data['title'] + " " + data['post'])
         return jsonify(x)
 
 if __name__ == "__main__":
