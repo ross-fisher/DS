@@ -20,6 +20,7 @@ from joblib import load
 app = Flask(__name__)
 db = create_engine('sqlite:///database.db')
 
+
 def get_subreddit(title):
     '''Predicts subreddit that fits a given title
      and outputs a list with the 5 best'''
@@ -29,7 +30,7 @@ def get_subreddit(title):
     post = tfidf.transform([title])
     pred_array = model.kneighbors(post)
     output = []
-    # pred # subreddit_name 
+    # pred # subreddit_name
     top_5_subreddit_scores = pred_array[0][0:5][0]
     top_5_subreddit_indices = pred_array[1][0:5][0]
 
@@ -38,8 +39,11 @@ def get_subreddit(title):
     for sr_index in top_5_subreddit_indices:
         result = None
         try:
-            # index has to be wrapped like ("index") because it's a reserved sql keyword
-            recommendation = conn.execute(f'select subreddit_name from submissions where ("index") = {sr_index};').fetchone()
+            # index has to be wrapped like ("index")
+            # because it's a reserved sql keyword
+            recommendation = conn.execute(
+                f'select subreddit_name from submissions where ("index") = {sr_index};'
+                ).fetchone()
             names.append(recommendation[0])
         except Exception as e:
             print(f'SQL Error: {e}')
@@ -131,20 +135,19 @@ def submission_analysis():
         data = request.get_json(force=True)
 
         data['tokens'] = tokenize(data['content'])
-       #  tfidf = TfidfVectorizer(
-       #       tokenizer=tokenize, min_df=0.1, max_df=0.9, ngram_range=(1, 2)
-       #       )
-       #  sparse = tfidf.fit_transform(data['content'])
-       #  dtm = pd.DataFrame(
-       #      sparse.todense(), columns=tfidf.get_feature_names()
-       #  )
+        #  tfidf = TfidfVectorizer(
+        #       tokenizer=tokenize, min_df=0.1, max_df=0.9, ngram_range=(1, 2)
+        #       )
+        #  sparse = tfidf.fit_transform(data['content'])
+        #  dtm = pd.DataFrame(
+        #      sparse.todense(), columns=tfidf.get_feature_names()
+        #  )
 
         x = get_subreddit(data['content'])
-        return jsonify( "\n" + str(x) + "\n") 
-        #return dtm.head()
+        return jsonify("\n" + str(x) + "\n")
+        # return dtm.head()
 
-
-        #return jsonify(columns)
+        # return jsonify(columns)
 
 
 if __name__ == "__main__":
