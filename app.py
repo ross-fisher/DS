@@ -108,8 +108,7 @@ def submission_analysis():
 
         data['tokens'] = tokenize(data['content'])
         x = get_subreddit(data['content'])
-        return jsonify( "\n" + str(x) + "\n") 
-        #return dtm.head()
+        return jsonify( "\n" + str(x) + "\n")
 
 
         #return jsonify(columns)
