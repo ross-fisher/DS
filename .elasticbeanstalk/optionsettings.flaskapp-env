@@ -1,0 +1,6 @@
+[aws:elasticbeanstlak:container:python]
+NumProcesses=1
+NumThreads=15
+StaticFiles=/static/=static/
+WSGIPath=application.py
+

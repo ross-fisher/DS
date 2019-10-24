@@ -1,5 +1,5 @@
 # CommentFiles for git to ignore.
-pycache/
+__pycache__/
 lib/
 lib64
 secrets.ini
