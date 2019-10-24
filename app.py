@@ -107,6 +107,10 @@ def submission_analysis():
 
 #        data['tokens'] = tokenize(data['title'] + data['post'])
         #data['tokens'] = tokenize(data['content'])
+
+        if data['post'] == None:
+            data['post'] = ""
+
         x = get_subreddit( data['title'] + data['post'] )
         return jsonify(x)
 
